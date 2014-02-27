@@ -3417,6 +3417,11 @@ class assign {
             // Get the list of users.
             $users = $data->selectedusers;
             $userlist = explode(',', $users);
+            $userlistcleaned = array();
+            foreach ($userlist as $userid)
+                if (strlen($userid) > 0)
+                    $userlistcleaned[] = $userid;
+            $userlist = $userlistcleaned;
 
             $prefix = 'plugingradingbatchoperation_';
 
