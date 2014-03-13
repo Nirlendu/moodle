@@ -543,15 +543,11 @@ class assign {
      * Clean the list of user ids for empty userid values during batch operations.
      *
      * @param string $users The string with selected userid's, comma seperated.
-     * @return array $userlist The cleaned array of userid's.
+     * @return array The cleaned array of userid's.
      */
-    private function clean_userlist($users) {
+    private function clean_user_list($users) {
         $userlist = explode(',', $users);
-        $userlistcleaned = array();
-        foreach ($userlist as $userid)
-            if (strlen($userid) > 0)
-                $userlistcleaned[] = $userid;
-        return $userlistcleaned;
+        return array_filter($userlist, 'strlen');
     }
 
 
@@ -3392,7 +3388,7 @@ class assign {
             $plugin = $this->get_feedback_plugin_by_type($plugintype);
             if ($plugin) {
                 $users = $data->selectedusers;
-                $userlist = $this->clean_userlist($users);
+                $userlist = $this->clean_user_list($users);
                 echo $plugin->grading_batch_operation($action, $userlist);
                 return;
             }
@@ -3432,7 +3428,7 @@ class assign {
         if ($data = $mform->get_data()) {
             // Get the list of users.
             $users = $data->selectedusers;
-            $userlist = $this->clean_userlist($users);
+            $userlist = $this->clean_user_list($users);
 
             $prefix = 'plugingradingbatchoperation_';
 
@@ -3491,7 +3487,7 @@ class assign {
 
         $submitteddata = $mform->get_data();
         $users = $submitteddata->selectedusers;
-        $userlist = $this->clean_userlist($users);
+        $userlist = $this->clean_user_list($users);
 
         $formparams = array('cm'=>$this->get_course_module()->id,
                             'users'=>$userlist,
@@ -3546,7 +3542,7 @@ class assign {
 
         $submitteddata = $mform->get_data();
         $users = $submitteddata->selectedusers;
-        $userlist = $this->clean_userlist($users);
+        $userlist = $this->clean_user_list($users);
 
         $formparams = array('cm'=>$this->get_course_module()->id,
             'users'=>$userlist,
@@ -4909,7 +4905,7 @@ class assign {
 
         if ($formdata = $mform->get_data()) {
             if ($batchusers) {
-                $users = $this->clean_userlist($batchusers);
+                $users = $this->clean_user_list($batchusers);
                 $result = true;
                 foreach ($users as $userid) {
                     $result = $this->save_user_extension($userid, $formdata->extensionduedate) && $result;
@@ -6189,7 +6185,7 @@ class assign {
 
         $batchusers = required_param('selectedusers', PARAM_TEXT);
         $state = required_param('markingworkflowstate', PARAM_ALPHA);
-        $useridlist = $this->clean_userlist($batchusers);
+        $useridlist = $this->clean_user_list($batchusers);
 
         foreach ($useridlist as $userid) {
             $flags = $this->get_user_flags($userid, true);
@@ -6246,7 +6242,7 @@ class assign {
         $markerid = required_param('allocatedmarker', PARAM_INT);
         $marker = $DB->get_record('user', array('id' => $markerid), '*', MUST_EXIST);
 
-        $useridlist = $this->clean_userlist($batchusers);
+        $useridlist = $this->clean_user_list($batchusers);
 
         foreach ($useridlist as $userid) {
             $flags = $this->get_user_flags($userid, true);
